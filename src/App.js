@@ -1,25 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import CvChunk from "./components/cvChunk";
+import CvChunkGroup from "./components/cvChunkGroup";
+import EditMasterToggle from "./components/EditToggle";
+import uniqid from "uniqid";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import "./style.css";
+
+const headerFields = ["Name", "Email", "Phone Number"];
+
+class App extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      masterEditMode: true,
+    };
+
+    this.headerFieldsWithKeys = headerFields.map((arrayVal) => ({name: arrayVal, key: uniqid()}));
+  }
+
+
+
+  toggleEditMode = (e) => {
+    this.setState({
+      masterEditMode: !this.state.masterEditMode,
+    });
+  };
+
+
+  render() {
+    return (
+      <div>
+        <EditMasterToggle editEnabled={this.state.masterEditMode} changed={this.toggleEditMode} />
+        {this.headerFieldsWithKeys.map((headerField) => {
+          return (
+            <CvChunk
+              infoType={headerField.name}
+              key={headerField.key}
+              editMasterEnabled={this.state.masterEditMode}
+              // singleline
+            />
+          );
+        })}
+        <CvChunkGroup groupType="Past Employment" editMasterEnabled={this.state.masterEditMode} />
+        <CvChunkGroup groupType="Academics" editMasterEnabled={this.state.masterEditMode} />
+        <CvChunkGroup groupType="Other Interests" editMasterEnabled={this.state.masterEditMode} />
+      </div>
+    );
+  }
 }
 
 export default App;
